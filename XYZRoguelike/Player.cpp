@@ -49,11 +49,11 @@ namespace Roguelike
             };
 
         auto collider = gameObject->AddComponent<Engine::SpriteColliderComponent>();
-
         attackComponent = gameObject->AddComponent<Engine::AttackComponent>();
         attackComponent->SetDamage(25.0f);
         attackComponent->SetAttackRange(150.0f);
         attackComponent->SetCooldown(0.5f);
+        attackComponent->SetSearchRadius(400.0f);
 
         LOG_INFO("Player created successfully. HP: " + std::to_string(healthComponent->GetCurrentHealth()) + ", Armor: " + std::to_string(healthComponent->GetArmor()) +
             ", Damage: " + std::to_string(attackComponent->GetDamage()));

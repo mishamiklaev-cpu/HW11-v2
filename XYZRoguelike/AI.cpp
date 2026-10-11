@@ -14,32 +14,27 @@ namespace Roguelike
         auto renderer = gameObject->AddComponent<Engine::SpriteRendererComponent>();
         renderer->SetTexture(*Engine::ResourceSystem::Instance()->GetTextureMapElementShared("AI", 0));
         renderer->SetPixelSize(100, 100);
-
         auto rigidbody = gameObject->AddComponent<Engine::RigidbodyComponent>();
         rigidbody->SetKinematic(false);
-
         auto follower = gameObject->AddComponent<Engine::FollowComponent>();
         follower->SetTarget(player);
         follower->SetSpeed(120.0f);
         follower->SetDetectionRadius(350.0f);
-
         healthComponent = gameObject->AddComponent<Engine::HealthComponent>();
         healthComponent->SetMaxHealth(50.0f);
         healthComponent->SetCurrentHealth(50.0f);
         healthComponent->SetArmor(5.0f);
-
         healthComponent->onDeath = [this]() {
             LOG_INFO("AI enemy died!");
             isAlive = false;
             Engine::GameWorld::Instance()->DestroyGameObject(gameObject);
             };
-
         auto collider = gameObject->AddComponent<Engine::SpriteColliderComponent>();
-
         attackComponent = gameObject->AddComponent<Engine::AttackComponent>();
         attackComponent->SetDamage(15.0f);
         attackComponent->SetAttackRange(120.0f);
         attackComponent->SetCooldown(1.2f);
+        attackComponent->SetSearchRadius(350.0f);
 
         LOG_INFO("AI enemy created successfully. HP: " + std::to_string(healthComponent->GetCurrentHealth()) +
             ", Armor: " + std::to_string(healthComponent->GetArmor()) +
@@ -73,10 +68,7 @@ namespace Roguelike
             }
         }
 
-        if (attackComponent != nullptr)
-        {
-            attackComponent->TryAttack();
-        }
+        attackComponent->TryAttack();
     }
 
     void AI::UpdateUI(sf::RenderWindow& window)

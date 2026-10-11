@@ -8,7 +8,6 @@
 #include "GameObject.h"
 #include "HealthComponent.h"
 #include "AttackComponent.h"
-#include <cassert>
 #include <SFML/Graphics.hpp>
 
 namespace Roguelike

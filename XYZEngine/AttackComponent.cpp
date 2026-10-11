@@ -12,6 +12,24 @@ namespace Engine
 	{
 	}
 
+	void AttackComponent::SetDamage(float value)
+	{
+		assert(value >= 0.f && "Attack damage cannot be negative");
+		attackDamage = value;
+	}
+
+	void AttackComponent::SetAttackRange(float value)
+	{
+		assert(value >= 0.f && "Attack range cannot be negative");
+		attackRange = value;
+	}
+
+	void AttackComponent::SetCooldown(float value)
+	{
+		assert(value >= 0.f && "Attack cooldown cannot be negative");
+		attackCooldown = value;
+	}
+
 	void AttackComponent::Update(float deltaTime)
 	{
 		cooldownTimer += deltaTime;
@@ -31,9 +49,7 @@ namespace Engine
 		}
 	}
 
-	void AttackComponent::Render()
-	{
-	}
+	void AttackComponent::Render() {}
 
 	GameObject* AttackComponent::FindNearestTarget()
 	{
@@ -68,6 +84,10 @@ namespace Engine
 			}
 
 			float distance = (otherTransform->GetWorldPosition() - myPosition).GetLength();
+			if (distance > searchRadius)
+			{
+				continue;
+			}
 
 			if (nearest == nullptr || distance < nearestDistance)
 			{
@@ -99,13 +119,8 @@ namespace Engine
 
 	bool AttackComponent::TryAttack()
 	{
-		assert(attackDamage >= 0.f && "Attack damage cannot be negative");
-		assert(attackRange >= 0.f && "Attack range cannot be negative");
-		assert(attackCooldown >= 0.f && "Attack cooldown cannot be negative");
-
 		if (target == nullptr)
 		{
-			LOG_WARN("AttackComponent: no target to attack");
 			return false;
 		}
 
@@ -128,10 +143,9 @@ namespace Engine
 		}
 
 		cooldownTimer = 0.f;
-		health->TakeDamage(attackDamage);
-
 		LOG_INFO(std::string("AttackComponent: attacked '") + target->GetName() + "' for " +
 			std::to_string(attackDamage) + " damage");
+		health->TakeDamage(attackDamage);
 
 		if (!health->IsAlive())
 		{
